@@ -1,0 +1,24 @@
+{
+  "name": "gases-oriente-elastic-signing-demo",
+  "version": "1.0.0",
+  "description": "Demo de onboarding de cliente con dos Elastic Signing agreements encadenados (Docusign Click API) para Gases del Oriente",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build-templates": "node scripts/build-elastic-template.js",
+    "create-agreements": "node scripts/create-clickwraps.js",
+    "check-consent": "node scripts/check-token.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "author": "Gases del Oriente - Demo Elastic Signing",
+  "license": "MIT"
+}

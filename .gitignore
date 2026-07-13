@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno y secretos
+.env
+.env.local
+*.pem
+private.key
+private.key.pem
+docusign_private.key
+
+# Salidas de scripts (IDs generados)
+config/clickwraps.generated.json
+
+# Logs
+npm-debug.log*
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

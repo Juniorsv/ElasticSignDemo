@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gases del Oriente · Registro de nuevo cliente</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark"></span>
+      <div>
+        <div class="brand-name">Gases del Oriente</div>
+        <div class="brand-sub">Gas natural domiciliario</div>
+      </div>
+    </div>
+    <div class="topbar-tag">Registro de nuevo cliente</div>
+  </header>
+
+  <main class="wrap">
+    <!-- Paso 1: Formulario -->
+    <section id="step-form" class="card">
+      <h1>Solicitud de conexión de gas</h1>
+      <p class="lead">
+        Completa tus datos para iniciar el onboarding. Firmarás dos acuerdos en línea,
+        uno tras otro, sin salir de esta página.
+      </p>
+
+      <form id="onboarding-form" novalidate>
+        <div class="field">
+          <label for="nombre">Nombre completo</label>
+          <input id="nombre" name="nombre" type="text" autocomplete="name" required
+                 placeholder="Ej: María Fernanda Gómez" />
+        </div>
+
+        <div class="field">
+          <label for="correo">Correo electrónico</label>
+          <input id="correo" name="correo" type="email" autocomplete="email" required
+                 placeholder="tucorreo@ejemplo.com" />
+        </div>
+
+        <div class="field">
+          <label for="direccion">Dirección del predio</label>
+          <input id="direccion" name="direccion" type="text" required
+                 placeholder="Ej: Calle 45 # 12-30, Bucaramanga" />
+        </div>
+
+        <div class="field">
+          <label for="tipoServicio">Tipo de servicio</label>
+          <select id="tipoServicio" name="tipoServicio" required>
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option value="Residencial">Residencial</option>
+            <option value="Comercial">Comercial</option>
+          </select>
+        </div>
+
+        <button type="submit" id="btn-continuar" class="btn btn-primary">Continuar</button>
+        <p id="form-error" class="form-error" hidden></p>
+      </form>
+    </section>
+
+    <!-- Paso 2/3: progreso de firmas -->
+    <section id="step-progress" class="card" hidden>
+      <div class="steps">
+        <div class="step" id="pill-1"><span class="dot">1</span> Contrato de Suministro</div>
+        <div class="step" id="pill-2"><span class="dot">2</span> Condiciones de Seguridad</div>
+        <div class="step" id="pill-3"><span class="dot">✓</span> Confirmación</div>
+      </div>
+    </section>
+
+    <!-- Confirmación final -->
+    <section id="step-done" class="card done" hidden>
+      <div class="done-check">✓</div>
+      <h1>¡Registro completado!</h1>
+      <p class="lead" id="done-msg"></p>
+      <div class="done-summary" id="done-summary"></div>
+      <button class="btn btn-secondary" onclick="location.reload()">Registrar otro cliente</button>
+    </section>
+  </main>
+
+  <!-- Modal en cascada para los agreements -->
+  <div id="modal-overlay" class="overlay" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-title">Acuerdo</h2>
+        <div class="modal-progress" id="modal-progress">Paso 1 de 2</div>
+      </div>
+      <div id="clickwrap-container" class="clickwrap-container">
+        <div class="loading">Cargando acuerdo…</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="foot">
+    Demo técnica · Docusign Click API (Elastic Signing) · Gases del Oriente S.A. E.S.P.
+  </footer>
+
+  <!-- El SDK de Docusign Click se carga dinámicamente según el entorno devuelto por el backend -->
+  <script src="app.js"></script>
+</body>
+</html>

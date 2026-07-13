@@ -1,0 +1,139 @@
+:root {
+  --azul: #12457a;
+  --azul-2: #0d3560;
+  --naranja: #e8792b;
+  --naranja-2: #cf6919;
+  --gris-bg: #f4f6f9;
+  --gris-linea: #d9e1ea;
+  --texto: #24303c;
+  --texto-suave: #5b6a78;
+  --ok: #1f9d55;
+}
+
+* { box-sizing: border-box; }
+
+/* El atributo hidden debe ganar SIEMPRE, incluso sobre reglas con display
+   (como .overlay { display: grid }). Sin esto, el modal quedaba siempre visible. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--gris-bg);
+  color: var(--texto);
+}
+
+/* Topbar */
+.topbar {
+  background: linear-gradient(90deg, var(--azul), var(--azul-2));
+  color: #fff;
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--naranja), var(--naranja-2));
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.25);
+}
+.brand-name { font-weight: 700; font-size: 17px; line-height: 1; }
+.brand-sub { font-size: 12px; opacity: .8; margin-top: 3px; }
+.topbar-tag {
+  font-size: 13px; background: rgba(255,255,255,.15);
+  padding: 6px 12px; border-radius: 20px;
+}
+
+/* Layout */
+.wrap { max-width: 560px; margin: 34px auto; padding: 0 16px; }
+.card {
+  background: #fff; border-radius: 14px; padding: 28px;
+  box-shadow: 0 6px 24px rgba(18,69,122,.08);
+  border: 1px solid var(--gris-linea);
+}
+h1 { font-size: 22px; margin: 0 0 8px; color: var(--azul); }
+.lead { color: var(--texto-suave); margin: 0 0 22px; font-size: 15px; line-height: 1.5; }
+
+/* Form */
+.field { margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+input, select {
+  width: 100%; padding: 11px 12px; font-size: 15px;
+  border: 1px solid var(--gris-linea); border-radius: 9px; background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+}
+input:focus, select:focus {
+  outline: none; border-color: var(--azul);
+  box-shadow: 0 0 0 3px rgba(18,69,122,.12);
+}
+
+/* Buttons */
+.btn {
+  width: 100%; padding: 13px; font-size: 15px; font-weight: 700;
+  border: none; border-radius: 10px; cursor: pointer; margin-top: 6px;
+  transition: transform .05s, background .15s;
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--naranja); color: #fff; }
+.btn-primary:hover { background: var(--naranja-2); }
+.btn-primary:disabled { background: #cbb4a3; cursor: default; }
+.btn-secondary { background: var(--azul); color: #fff; }
+.btn-secondary:hover { background: var(--azul-2); }
+
+.form-error { color: #c0392b; font-size: 13px; margin-top: 10px; }
+
+/* Steps pills */
+.steps { display: flex; gap: 8px; flex-wrap: wrap; }
+.step {
+  flex: 1; min-width: 140px; display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: var(--texto-suave);
+  padding: 10px 12px; border-radius: 10px; background: var(--gris-bg);
+  border: 1px solid var(--gris-linea);
+}
+.step .dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #c3cfdb; color: #fff; display: grid; place-items: center;
+  font-size: 12px; flex: none;
+}
+.step.active { color: var(--azul); border-color: var(--azul); background: #eaf1f9; }
+.step.active .dot { background: var(--naranja); }
+.step.done .dot { background: var(--ok); }
+.step.done { color: var(--ok); }
+
+/* Modal */
+.overlay {
+  position: fixed; inset: 0; background: rgba(15,32,52,.55);
+  display: grid; place-items: center; padding: 16px; z-index: 50;
+}
+.modal {
+  background: #fff; border-radius: 14px; width: 100%; max-width: 640px;
+  max-height: 92vh; display: flex; flex-direction: column; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.modal-header {
+  padding: 16px 20px; background: var(--azul); color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.modal-header h2 { font-size: 16px; margin: 0; }
+.modal-progress { font-size: 12px; opacity: .85; }
+.clickwrap-container { padding: 10px; overflow: auto; min-height: 320px; background: #fff; }
+.loading { padding: 60px 20px; text-align: center; color: var(--texto-suave); }
+
+/* Done */
+.done { text-align: center; }
+.done-check {
+  width: 64px; height: 64px; margin: 0 auto 14px; border-radius: 50%;
+  background: var(--ok); color: #fff; font-size: 34px; display: grid; place-items: center;
+}
+.done-summary {
+  text-align: left; background: var(--gris-bg); border: 1px solid var(--gris-linea);
+  border-radius: 10px; padding: 14px 16px; margin: 4px 0 20px; font-size: 14px;
+}
+.done-summary div { padding: 3px 0; }
+.done-summary b { color: var(--azul); }
+
+.foot {
+  text-align: center; color: var(--texto-suave); font-size: 12px;
+  padding: 24px 16px 40px;
+}

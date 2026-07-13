@@ -1,0 +1,27 @@
+# Blueprint de despliegue para Render (https://render.com)
+# Crea un Web Service Node a partir de este repo.
+# Las variables marcadas sync:false deben cargarse manualmente en el dashboard de Render.
+services:
+  - type: web
+    name: gases-oriente-elastic-signing
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DS_ENV
+        value: https://demo.docusign.net
+      - key: DS_OAUTH_BASE
+        value: https://account-d.docusign.com
+      - key: DS_INTEGRATION_KEY
+        sync: false
+      - key: DS_USER_ID
+        sync: false
+      - key: DS_ACCOUNT_ID
+        sync: false
+      - key: DS_PRIVATE_KEY
+        sync: false
+      - key: CLICKWRAP_ID_CONTRATO
+        sync: false
+      - key: CLICKWRAP_ID_SEGURIDAD
+        sync: false
