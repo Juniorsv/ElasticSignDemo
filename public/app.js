@@ -164,6 +164,7 @@ async function finish() {
 
   document.getElementById('step-progress').hidden = true;
   document.getElementById('step-done').hidden = false;
+  celebrate();
 
   try {
     const r = await fetch('/api/onboarding/status?clientUserId=' + encodeURIComponent(session.clientUserId));
@@ -182,6 +183,26 @@ function showFormError(msg) {
   const el = document.getElementById('form-error');
   el.textContent = msg;
   el.hidden = false;
+}
+
+/** Pequeño confeti CSS para la pantalla de confirmación (sin librerías). */
+function celebrate() {
+  const colors = ['#e8792b', '#12457a', '#1f9d55', '#1e5fa0', '#f4a468', '#7fb0e0'];
+  const N = 90;
+  for (let i = 0; i < N; i++) {
+    const p = document.createElement('span');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.background = colors[i % colors.length];
+    p.style.animationDuration = 2.6 + Math.random() * 2 + 's';
+    p.style.animationDelay = Math.random() * 0.5 + 's';
+    p.style.opacity = String(0.7 + Math.random() * 0.3);
+    const w = 6 + Math.random() * 7;
+    p.style.width = w + 'px';
+    p.style.height = w * 1.5 + 'px';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 5200);
+  }
 }
 
 function escapeHtml(s) {

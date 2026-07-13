@@ -7,9 +7,21 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Formas decorativas de fondo -->
+  <div class="bg-decor" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
   <header class="topbar">
     <div class="brand">
-      <span class="brand-mark"></span>
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M12 2c2 3 5 5 5 9a5 5 0 0 1-10 0c0-1.6.6-2.7 1.4-3.7C9 8.9 9 10.4 10 11c0-2.4 1-4.6 2-9z"
+                fill="#fff"/>
+        </svg>
+      </span>
       <div>
         <div class="brand-name">Gases del Oriente</div>
         <div class="brand-sub">Gas natural domiciliario</div>
@@ -20,42 +32,58 @@
 
   <main class="wrap">
     <!-- Paso 1: Formulario -->
-    <section id="step-form" class="card">
+    <section id="step-form" class="card anim-in">
+      <span class="eyebrow">Onboarding digital</span>
       <h1>Solicitud de conexión de gas</h1>
       <p class="lead">
-        Completa tus datos para iniciar el onboarding. Firmarás dos acuerdos en línea,
+        Completa tus datos para iniciar el proceso. Firmarás dos acuerdos en línea,
         uno tras otro, sin salir de esta página.
       </p>
 
       <form id="onboarding-form" novalidate>
         <div class="field">
           <label for="nombre">Nombre completo</label>
-          <input id="nombre" name="nombre" type="text" autocomplete="name" required
-                 placeholder="Ej: María Fernanda Gómez" />
+          <div class="input-wrap">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6Z"/></svg>
+            <input id="nombre" name="nombre" type="text" autocomplete="name" required
+                   placeholder="Ej: María Fernanda Gómez" />
+          </div>
         </div>
 
         <div class="field">
           <label for="correo">Correo electrónico</label>
-          <input id="correo" name="correo" type="email" autocomplete="email" required
-                 placeholder="tucorreo@ejemplo.com" />
+          <div class="input-wrap">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.4 2 7.6 5.3L19.6 7H4.4Z"/></svg>
+            <input id="correo" name="correo" type="email" autocomplete="email" required
+                   placeholder="tucorreo@ejemplo.com" />
+          </div>
         </div>
 
         <div class="field">
           <label for="direccion">Dirección del predio</label>
-          <input id="direccion" name="direccion" type="text" required
-                 placeholder="Ej: Calle 45 # 12-30, Bucaramanga" />
+          <div class="input-wrap">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
+            <input id="direccion" name="direccion" type="text" required
+                   placeholder="Ej: Calle 45 # 12-30, Bucaramanga" />
+          </div>
         </div>
 
         <div class="field">
           <label for="tipoServicio">Tipo de servicio</label>
-          <select id="tipoServicio" name="tipoServicio" required>
-            <option value="" disabled selected>Selecciona una opción</option>
-            <option value="Residencial">Residencial</option>
-            <option value="Comercial">Comercial</option>
-          </select>
+          <div class="input-wrap">
+            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V9l8-6 8 6v12h-6v-6h-4v6H4Z"/></svg>
+            <select id="tipoServicio" name="tipoServicio" required>
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="Residencial">Residencial</option>
+              <option value="Comercial">Comercial</option>
+            </select>
+          </div>
         </div>
 
-        <button type="submit" id="btn-continuar" class="btn btn-primary">Continuar</button>
+        <button type="submit" id="btn-continuar" class="btn btn-primary">
+          <span>Continuar</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h12m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
         <p id="form-error" class="form-error" hidden></p>
       </form>
     </section>
@@ -71,7 +99,12 @@
 
     <!-- Confirmación final -->
     <section id="step-done" class="card done" hidden>
-      <div class="done-check">✓</div>
+      <div class="done-check">
+        <svg viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="dc-circle" cx="26" cy="26" r="24" fill="none"/>
+          <path class="dc-mark" fill="none" d="M14 27l8 8 16-17"/>
+        </svg>
+      </div>
       <h1>¡Registro completado!</h1>
       <p class="lead" id="done-msg"></p>
       <div class="done-summary" id="done-summary"></div>
