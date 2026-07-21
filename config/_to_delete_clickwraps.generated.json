@@ -1,0 +1,12 @@
+{
+  "contrato": {
+    "clickwrapId": "593e7061-500f-41d0-a36e-8d401cb59be5",
+    "envVar": "CLICKWRAP_ID_CONTRATO",
+    "name": "Contrato de Suministro de Gas"
+  },
+  "seguridad": {
+    "clickwrapId": "1050916b-7e49-4e06-89a9-fe2c84a0bbed",
+    "envVar": "CLICKWRAP_ID_SEGURIDAD",
+    "name": "Condiciones de Seguridad e Instalación"
+  }
+}
