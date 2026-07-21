@@ -18,7 +18,7 @@ const crypto = require('crypto');
 const express = require('express');
 
 const { AGREEMENTS, buildDocumentData } = require('./config/agreements');
-const { getUserAgreements } = require('./lib/click-api');
+const { getUserAgreements, getAgreementPdf } = require('./lib/click-api');
 
 const app = express();
 app.use(express.json());
@@ -121,6 +121,46 @@ app.get('/api/onboarding/status', async (req, res) => {
   } catch (err) {
     const detail = err.response && err.response.data ? err.response.data : err.message;
     res.status(500).json({ error: 'No se pudo verificar el estado.', detail });
+  }
+});
+
+/**
+ * GET /api/onboarding/document?clientUserId=...&key=promesa|pagare
+ * Descarga desde la Click API el PDF firmado del acuerdo indicado y lo
+ * devuelve para verlo en el navegador (inline). El access token NUNCA se
+ * expone: la descarga la hace el backend con su JWT.
+ */
+app.get('/api/onboarding/document', async (req, res) => {
+  const { clientUserId, key } = req.query;
+  if (!clientUserId) return res.status(400).json({ error: 'Falta clientUserId.' });
+
+  const ag = AGREEMENTS.find((a) => a.key === key);
+  if (!ag) return res.status(400).json({ error: 'Acuerdo desconocido.' });
+
+  try {
+    const clickwrapId = resolveClickwrapId(ag);
+    const data = await getUserAgreements(clickwrapId, clientUserId);
+    const firmado = (data.userAgreements || []).find(
+      (u) => (u.status || '').toLowerCase() === 'agreed'
+    );
+    if (!firmado || !firmado.agreementId) {
+      return res.status(404).json({ error: 'Aún no hay un documento firmado para este usuario.' });
+    }
+
+    const pdf = await getAgreementPdf(clickwrapId, firmado.agreementId);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${ag.key}-${clientUserId}.pdf"`);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.send(pdf);
+  } catch (err) {
+    // La respuesta de error de axios puede venir como arraybuffer; la volvemos texto.
+    let detail = err.message;
+    const d = err.response && err.response.data;
+    if (d) {
+      try { detail = Buffer.isBuffer(d) ? Buffer.from(d).toString('utf8') : d; }
+      catch (_) { detail = String(d); }
+    }
+    return res.status(500).json({ error: 'No se pudo obtener el documento firmado.', detail });
   }
 });
 

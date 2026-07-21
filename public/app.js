@@ -169,6 +169,25 @@ async function finish() {
     `<div><b>Acuerdos:</b> Promesa de Contrato de Mutuo · Pagaré en Blanco con Carta de Instrucciones</div>`;
   document.getElementById('done-summary').innerHTML = summary;
 
+  // Botones para ver cada documento firmado (PDF con el registro de aceptación).
+  // El href se arma con el clientUserId actual, así sigue sirviendo aunque luego
+  // se reinicie el formulario para una nueva solicitud.
+  const docsBox = document.getElementById('done-docs');
+  docsBox.innerHTML = '';
+  session.agreements.forEach((ag) => {
+    const a = document.createElement('a');
+    a.className = 'btn btn-ghost';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.href = '/api/onboarding/document?clientUserId=' +
+      encodeURIComponent(session.clientUserId) + '&key=' + encodeURIComponent(ag.key);
+    a.innerHTML =
+      '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">' +
+      '<path d="M6 2h9l5 5v15a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Zm8 1.5V8h4.5L14 3.5ZM8 12h8v1.6H8V12Zm0 4h8v1.6H8V16Z"/>' +
+      '</svg><span>Ver ' + escapeHtml(ag.displayName) + '</span>';
+    docsBox.appendChild(a);
+  });
+
   document.getElementById('step-progress').hidden = true;
   document.getElementById('step-done').hidden = false;
   celebrate();
@@ -201,6 +220,9 @@ function nuevaSolicitud() {
   // Limpia el mensaje de error y el confeti que haya quedado.
   document.getElementById('form-error').hidden = true;
   document.querySelectorAll('.confetti-piece').forEach((p) => p.remove());
+
+  // Quita los botones de "ver documento" de la solicitud anterior.
+  document.getElementById('done-docs').innerHTML = '';
 
   // Reinicia los indicadores de paso.
   [1, 2, 3].forEach((n) => setPill(n, ''));

@@ -172,6 +172,13 @@ input::placeholder { color: #a9b6c2; }
 @keyframes shine { 0%, 60% { left: -60%; } 100% { left: 130%; } }
 .btn-secondary { background: var(--azul); color: #fff; }
 .btn-secondary:hover { background: var(--azul-2); }
+/* Botón contorneado para "ver documento firmado" */
+.btn-ghost { background: #fff; color: var(--azul); border: 1.6px solid var(--azul); }
+.btn-ghost:hover { background: rgba(18, 69, 122, 0.06); }
+.btn-ghost svg { fill: currentColor; }
+
+/* Contenedor de los botones para ver los documentos firmados */
+.done-docs { display: grid; gap: 8px; margin: 4px 0; }
 
 .form-error {
   color: #c0392b; font-size: 13.5px; margin-top: 12px; background: #fdecea;
