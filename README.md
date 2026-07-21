@@ -1,18 +1,30 @@
 # Gases del Oriente · Demo de Elastic Signing (Docusign Click API)
 
-Demo funcional de onboarding de nuevo cliente con **dos Elastic Signing agreements
-encadenados** (uno tras otro), rellenados con datos dinámicos desde un formulario
-propio, sin pasar por un flujo de firma tradicional.
+Demo funcional de solicitud de **cupo de crédito rotativo** con **dos Elastic
+Signing agreements encadenados** (uno tras otro), rellenados con datos
+dinámicos desde un formulario propio, sin pasar por un flujo de firma
+tradicional. Los dos documentos son fieles a las plantillas reales que usa
+el cliente para este producto:
+
+1. **Promesa de Contrato de Mutuo** — el cupo de crédito rotativo en sí,
+   pagadero en cuotas a través de la factura del servicio de gas.
+2. **Pagaré en Blanco con Carta de Instrucciones** — la garantía que el
+   deudor suscribe junto con la promesa de mutuo (cláusula 5 de la propia
+   Promesa de Mutuo).
 
 **Flujo de usuario**
 
-1. El cliente llena un formulario (nombre, correo, dirección del predio, tipo de servicio).
-2. Al dar **Continuar** se abre el primer agreement — *Contrato de Suministro de Gas* —
-   con los datos prellenados como campos dinámicos y el botón **Acepto el Contrato**.
+1. El cliente llena un formulario (nombre/razón social, correo, tipo y
+   número de documento, dirección, teléfono, monto del cupo solicitado y,
+   opcionalmente, un codeudor).
+2. Al dar **Continuar** se abre el primer agreement — *Promesa de Contrato
+   de Mutuo* — con los datos prellenados como campos dinámicos y el botón
+   **Acepto la Promesa de Mutuo**.
 3. Inmediatamente después se abre, encadenado, el segundo agreement —
-   *Condiciones de Seguridad e Instalación* — con los mismos datos y el botón
-   **Acepto las Condiciones de Seguridad**.
-4. Al aceptar ambos se muestra una pantalla de confirmación.
+   *Pagaré en Blanco con Carta de Instrucciones* — con los mismos datos y
+   el botón **Acepto y Suscribo el Pagaré**.
+4. Al aceptar ambos se muestra una pantalla de confirmación con el resumen
+   del cupo otorgado.
 
 El render de los acuerdos ocurre en el navegador con el **SDK oficial de Docusign Click**,
 por lo que el access token nunca se expone al cliente. El backend (JWT Grant) crea los
@@ -24,20 +36,21 @@ clickwraps, sirve la configuración con los datos dinámicos y verifica el estad
 
 ```
 navegador (public/)
-   │  POST /api/onboarding/start  { nombre, correo, direccion, tipoServicio }
+   │  POST /api/onboarding/start  { nombre, correo, tipoDocumento, numeroDocumento,
+   │                                 direccion, telefono, montoCupo, ...codeudor }
    ▼
 backend Express (server.js)  ── JWT Grant ──►  Docusign Click API
    │  ◄── { clientUserId, accountId, clickwrapIds, documentData }
    ▼
 SDK Docusign Click en el navegador
-   render agreement 1  ──onAgreed──►  render agreement 2  ──onAgreed──►  confirmación
+   render agreement 1 (Promesa de Mutuo)  ──onAgreed──►  render agreement 2 (Pagaré)  ──onAgreed──►  confirmación
 ```
 
 Archivos clave:
 
 | Ruta | Qué hace |
 |------|----------|
-| `scripts/generate-pdfs.py` | Genera los 2 PDFs base con placeholders `{{...}}` |
+| `scripts/generate-pdfs.py` | Genera los 2 PDFs base (con el logo real del cliente) con placeholders `{{...}}` |
 | `scripts/build-elastic-template.js` | Genera los **archivos de elastic template** (`elastic-templates/*.json`) que se cargan en Docusign |
 | `elastic-templates/*.elastic-template.json` | Definición completa del elastic template (base64 del PDF + `dataFields`) — este es el "archivo" que se sube |
 | `scripts/create-clickwraps.js` | **Script de un solo uso**: carga los elastic templates y crea los 2 clickwraps |
@@ -47,6 +60,7 @@ Archivos clave:
 | `config/agreements.js` | Config compartida y nombres de campos dinámicos |
 | `server.js` | Backend Express |
 | `public/` | Frontend (formulario, modal en cascada, confirmación) |
+| `public/assets/gases-oriente-logo.png` | Logo real del cliente, usado en el header web y en los PDFs generados |
 
 ---
 
@@ -113,7 +127,7 @@ DS_INTEGRATION_KEY=<tu integration key>
 DS_USER_ID=<tu user id>
 DS_ACCOUNT_ID=<tu account id>
 DS_PRIVATE_KEY_PATH=./private.key
-# CLICKWRAP_ID_CONTRATO y CLICKWRAP_ID_SEGURIDAD se llenan en el paso 7
+# CLICKWRAP_ID_PROMESA y CLICKWRAP_ID_PAGARE se llenan en el paso 7
 ```
 
 ### 5. Dar consentimiento inicial (una sola vez)
@@ -145,8 +159,16 @@ pip install reportlab
 python3 scripts/generate-pdfs.py
 ```
 
-Cada PDF contiene los placeholders visibles
-`{{nombre_cliente}}`, `{{direccion_predio}}`, `{{tipo_servicio}}`, `{{fecha}}`.
+Cada PDF (`Promesa_Mutuo.pdf`, `Pagare.pdf`) usa el logo real de
+`public/assets/gases-oriente-logo.png` y contiene los placeholders visibles:
+
+```
+{{nombre_deudor}}              {{tipo_documento_deudor}}
+{{numero_documento_deudor}}    {{direccion}}
+{{telefono}}                   {{monto_cupo}}
+{{nombre_codeudor}}            {{tipo_documento_codeudor}}
+{{numero_documento_codeudor}}  {{fecha}}
+```
 
 ### 7. Generar el archivo del elastic template
 
@@ -161,18 +183,18 @@ npm run build-templates
 Esto crea, en `elastic-templates/`:
 
 ```
-contrato-suministro-gas.elastic-template.json
-condiciones-seguridad-instalacion.elastic-template.json
+promesa-mutuo.elastic-template.json
+pagare.elastic-template.json
 ```
 
 Cada archivo tiene esta forma (el `documentBase64` va completo):
 
 ```jsonc
 {
-  "clickwrapName": "Contrato de Suministro de Gas",
+  "clickwrapName": "Promesa de Contrato de Mutuo",
   "displaySettings": {
-    "displayName": "Contrato de Suministro de Gas",
-    "consentButtonText": "Acepto el Contrato",
+    "displayName": "Promesa de Contrato de Mutuo",
+    "consentButtonText": "Acepto la Promesa de Mutuo",
     "downloadable": true,
     "format": "modal",
     "hasAccept": true,
@@ -181,16 +203,22 @@ Cada archivo tiene esta forma (el `documentBase64` va completo):
     "documentDisplay": "document"
   },
   "documents": [
-    { "documentName": "Contrato de Suministro de Gas",
+    { "documentName": "Promesa de Contrato de Mutuo",
       "documentBase64": "JVBERi0xLjQ...",  // PDF completo en base64
       "fileExtension": "pdf", "order": 0 }
   ],
   "requireReacceptance": true,
   "dataFields": [
-    { "name": "nombre_cliente",   "label": "Nombre del cliente",   "type": "STRING" },
-    { "name": "direccion_predio", "label": "Dirección del predio", "type": "STRING" },
-    { "name": "tipo_servicio",    "label": "Tipo de servicio",     "type": "STRING" },
-    { "name": "fecha",            "label": "Fecha",                "type": "STRING" }
+    { "name": "nombre_deudor",              "label": "Nombre completo o razón social", "type": "STRING" },
+    { "name": "tipo_documento_deudor",       "label": "Tipo de documento (deudor)",     "type": "STRING" },
+    { "name": "numero_documento_deudor",     "label": "Número de documento (deudor)",   "type": "STRING" },
+    { "name": "direccion",                   "label": "Dirección del predio",           "type": "STRING" },
+    { "name": "telefono",                    "label": "Teléfono",                       "type": "STRING" },
+    { "name": "monto_cupo",                  "label": "Monto del cupo de crédito",      "type": "STRING" },
+    { "name": "nombre_codeudor",             "label": "Nombre razón social (codeudor)", "type": "STRING" },
+    { "name": "tipo_documento_codeudor",     "label": "Tipo de documento (codeudor)",   "type": "STRING" },
+    { "name": "numero_documento_codeudor",   "label": "Número de documento (codeudor)", "type": "STRING" },
+    { "name": "fecha",                       "label": "Fecha",                          "type": "STRING" }
   ]
 }
 ```
@@ -205,7 +233,7 @@ Puedes cargarlo de dos maneras:
   curl -X POST "$DS_ENV/clickapi/v1/accounts/$DS_ACCOUNT_ID/clickwraps" \
     -H "Authorization: Bearer <ACCESS_TOKEN>" \
     -H "Content-Type: application/json" \
-    -d @elastic-templates/contrato-suministro-gas.elastic-template.json
+    -d @elastic-templates/promesa-mutuo.elastic-template.json
   ```
 
 > Los `dataFields` definen los **tipos** de campo dinámico. La **posición** de cada campo
@@ -226,8 +254,8 @@ arma al vuelo desde los PDFs) y crea los dos clickwraps **en estado borrador (dr
 Al terminar imprime los IDs:
 
 ```
-CLICKWRAP_ID_CONTRATO=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-CLICKWRAP_ID_SEGURIDAD=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+CLICKWRAP_ID_PROMESA=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+CLICKWRAP_ID_PAGARE=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ```
 
 Cópialos a tu `.env` (también quedan en `config/clickwraps.generated.json`).
@@ -239,17 +267,23 @@ Los `dataFields` ya existen en el elastic template (definidos en el JSON), pero 
 
 1. Ve a **Docusign → Agreements / Clickwrap** (o
    https://apps-d.docusign.com/send/templates → *Clickwraps*).
-2. Abre el clickwrap (ej. *Contrato de Suministro de Gas*).
+2. Abre el clickwrap (ej. *Promesa de Contrato de Mutuo*).
 3. Entra a editar el documento. Sobre cada placeholder `{{...}}` arrastra el campo
    dinámico correspondiente (ya aparece en la lista de *Data fields* con su nombre).
 4. Confirma que cada campo se llama EXACTAMENTE así (debe coincidir con `documentData`):
 
-   | Placeholder en el PDF | Nombre del campo dinámico |
-   |-----------------------|---------------------------|
-   | `{{nombre_cliente}}`  | `nombre_cliente` |
-   | `{{direccion_predio}}`| `direccion_predio` |
-   | `{{tipo_servicio}}`   | `tipo_servicio` |
-   | `{{fecha}}`           | `fecha` |
+   | Placeholder en el PDF              | Nombre del campo dinámico |
+   |-------------------------------------|---------------------------|
+   | `{{nombre_deudor}}`                 | `nombre_deudor` |
+   | `{{tipo_documento_deudor}}`         | `tipo_documento_deudor` |
+   | `{{numero_documento_deudor}}`       | `numero_documento_deudor` |
+   | `{{direccion}}`                     | `direccion` |
+   | `{{telefono}}`                      | `telefono` |
+   | `{{monto_cupo}}`                    | `monto_cupo` |
+   | `{{nombre_codeudor}}`               | `nombre_codeudor` |
+   | `{{tipo_documento_codeudor}}`       | `tipo_documento_codeudor` |
+   | `{{numero_documento_codeudor}}`     | `numero_documento_codeudor` |
+   | `{{fecha}}`                         | `fecha` |
 
 5. Asegúrate de que cada campo sea **dinámico** (dynamic content).
 6. Pulsa **Activate / Activar**. El clickwrap pasa a estado **active**.
@@ -288,8 +322,8 @@ Llena el formulario, da **Continuar** y verás los dos acuerdos en cascada con t
    | `DS_USER_ID` | tu user id |
    | `DS_ACCOUNT_ID` | tu account id |
    | `DS_PRIVATE_KEY` | pega la clave privada completa (multilínea) |
-   | `CLICKWRAP_ID_CONTRATO` | id del paso 7 |
-   | `CLICKWRAP_ID_SEGURIDAD` | id del paso 7 |
+   | `CLICKWRAP_ID_PROMESA` | id del paso 7 |
+   | `CLICKWRAP_ID_PAGARE` | id del paso 7 |
 
    > En Render usa `DS_PRIVATE_KEY` (no `DS_PRIVATE_KEY_PATH`). El campo soporta
    > multilínea; pega la clave tal cual. `lib/docusign-auth.js` también acepta
@@ -308,7 +342,7 @@ Llena el formulario, da **Continuar** y verás los dos acuerdos en cascada con t
 |---------|------------------|
 | `consent_required` | Falta el consentimiento. Corre `npm run check-consent` y abre la URL. |
 | El modal carga pero sale vacío o con error | El clickwrap no está **activo** o le faltan los campos dinámicos. Revisa el paso 8. |
-| Los datos no se rellenan | Los nombres de los campos dinámicos no coinciden con `documentData`. Usa exactamente `nombre_cliente`, `direccion_predio`, `tipo_servicio`, `fecha`. |
+| Los datos no se rellenan | Los nombres de los campos dinámicos no coinciden con `documentData`. Usa exactamente los nombres de la tabla del paso 9. |
 | `Falta la variable CLICKWRAP_ID_...` | No copiaste los IDs del paso 7 al `.env` / Render. |
 | Error 401 al crear clickwraps | Token inválido o cuenta/entorno equivocados. Verifica `DS_ACCOUNT_ID` y `DS_ENV`. |
 | Producción | Cambia `DS_ENV=https://www.docusign.net` y `DS_OAUTH_BASE=https://account.docusign.com`, y repite consentimiento + creación en la cuenta de producción. |
@@ -318,9 +352,16 @@ Llena el formulario, da **Continuar** y verás los dos acuerdos en cascada con t
 ## Notas técnicas
 
 - **Scopes JWT:** `signature impersonation click.manage click.send`.
-- **Encadenamiento:** el segundo agreement se renderiza dentro del callback `onAgreed`
-  del primero (`public/app.js`), logrando la cascada sin recargar la página.
+- **Encadenamiento:** el segundo agreement (Pagaré) se renderiza dentro del callback
+  `onAgreed` del primero (Promesa de Mutuo) en `public/app.js`, logrando la cascada sin
+  recargar la página.
 - **clientUserId:** lo genera el backend por sesión de onboarding; identifica al firmante
   en Docusign y permite verificar el estado en `/api/onboarding/status`.
 - **Datos dinámicos:** se envían al SDK vía `documentData`. Las claves deben coincidir con
   los nombres de los campos dinámicos marcados en la consola.
+- **Codeudor opcional:** si el formulario no marca "Este crédito tendrá un codeudor", los
+  campos `nombre_codeudor`, `tipo_documento_codeudor` y `numero_documento_codeudor` se
+  envían vacíos; en el PDF esa fila de la tabla simplemente queda en blanco.
+- **Documentos fuente:** el contenido legal de `Promesa_Mutuo.pdf` y `Pagare.pdf` está
+  basado en las plantillas reales que Gases del Oriente S.A. E.S.P. comparte con sus
+  clientes para el cupo de crédito rotativo con Comercios Aliados.

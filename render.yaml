@@ -21,7 +21,7 @@ services:
         sync: false
       - key: DS_PRIVATE_KEY
         sync: false
-      - key: CLICKWRAP_ID_CONTRATO
+      - key: CLICKWRAP_ID_PROMESA
         sync: false
-      - key: CLICKWRAP_ID_SEGURIDAD
+      - key: CLICKWRAP_ID_PAGARE
         sync: false

@@ -47,11 +47,17 @@ function resolveClickwrapId(agreement) {
  * resp: { clientUserId, environment, accountId, agreements: [{key, displayName, clickwrapId, ...}], documentData }
  */
 app.post('/api/onboarding/start', (req, res) => {
-  const { nombre, correo, direccion, tipoServicio } = req.body || {};
+  const {
+    nombre, correo, tipoDocumento, numeroDocumento,
+    direccion, telefono, montoCupo,
+    nombreCodeudor, tipoDocumentoCodeudor, numeroDocumentoCodeudor,
+  } = req.body || {};
 
-  if (!nombre || !correo || !direccion || !tipoServicio) {
+  const requeridos = { nombre, correo, tipoDocumento, numeroDocumento, direccion, telefono, montoCupo };
+  const faltantes = Object.entries(requeridos).filter(([, v]) => !v).map(([k]) => k);
+  if (faltantes.length) {
     return res.status(400).json({
-      error: 'Faltan campos. Se requieren: nombre, correo, direccion, tipoServicio.',
+      error: `Faltan campos requeridos: ${faltantes.join(', ')}.`,
     });
   }
 
@@ -62,7 +68,10 @@ app.post('/api/onboarding/start', (req, res) => {
   // Un clientUserId estable por sesión de onboarding (identifica al firmante en Docusign).
   const clientUserId = `goe-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
 
-  const documentData = buildDocumentData({ nombre, correo, direccion, tipoServicio });
+  const documentData = buildDocumentData({
+    nombre, tipoDocumento, numeroDocumento, direccion, telefono, montoCupo,
+    nombreCodeudor, tipoDocumentoCodeudor, numeroDocumentoCodeudor,
+  });
 
   const agreements = [];
   for (const ag of AGREEMENTS) {

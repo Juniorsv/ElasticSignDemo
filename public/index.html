@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gases del Oriente · Registro de nuevo cliente</title>
+  <title>Gases del Oriente · Cupo de Crédito Rotativo</title>
+  <link rel="icon" href="assets/gases-oriente-logo.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -17,32 +18,30 @@
   <header class="topbar">
     <div class="brand">
       <span class="brand-mark">
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <path d="M12 2c2 3 5 5 5 9a5 5 0 0 1-10 0c0-1.6.6-2.7 1.4-3.7C9 8.9 9 10.4 10 11c0-2.4 1-4.6 2-9z"
-                fill="#fff"/>
-        </svg>
+        <img src="assets/gases-oriente-logo.png" alt="Gases del Oriente" class="brand-logo" />
       </span>
       <div>
         <div class="brand-name">Gases del Oriente</div>
-        <div class="brand-sub">Gas natural domiciliario</div>
+        <div class="brand-sub">Cupo de crédito rotativo</div>
       </div>
     </div>
-    <div class="topbar-tag">Registro de nuevo cliente</div>
+    <div class="topbar-tag">Solicitud digital de crédito</div>
   </header>
 
   <main class="wrap">
     <!-- Paso 1: Formulario -->
     <section id="step-form" class="card anim-in">
       <span class="eyebrow">Onboarding digital</span>
-      <h1>Solicitud de conexión de gas</h1>
+      <h1>Solicitud de cupo de crédito rotativo</h1>
       <p class="lead">
-        Completa tus datos para iniciar el proceso. Firmarás dos acuerdos en línea,
-        uno tras otro, sin salir de esta página.
+        Completa tus datos para solicitar tu cupo de crédito con los Comercios Aliados.
+        Firmarás la <b>Promesa de Contrato de Mutuo</b> y el <b>Pagaré en blanco</b> en
+        línea, uno tras otro, sin salir de esta página.
       </p>
 
       <form id="onboarding-form" novalidate>
         <div class="field">
-          <label for="nombre">Nombre completo</label>
+          <label for="nombre">Nombre completo o razón social</label>
           <div class="input-wrap">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6Z"/></svg>
             <input id="nombre" name="nombre" type="text" autocomplete="name" required
@@ -59,24 +58,91 @@
           </div>
         </div>
 
+        <div class="row-2">
+          <div class="field">
+            <label for="tipoDocumento">Tipo de documento</label>
+            <div class="input-wrap">
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm2 4v2h5V8H6Zm0 4v2h9v-2H6Zm0 4v2h9v-2H6Z"/></svg>
+              <select id="tipoDocumento" name="tipoDocumento" required>
+                <option value="" disabled selected>Selecciona</option>
+                <option value="C.C.">Cédula de ciudadanía (C.C.)</option>
+                <option value="C.E.">Cédula de extranjería (C.E.)</option>
+                <option value="NIT">NIT</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="numeroDocumento">Número de documento</label>
+            <div class="input-wrap">
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3V4Zm2 2v3h14V6H5Zm0 5v2h6v-2H5Zm0 4v2h9v-2H5Z"/></svg>
+              <input id="numeroDocumento" name="numeroDocumento" type="text" inputmode="numeric" required
+                     placeholder="Ej: 1091234567" />
+            </div>
+          </div>
+        </div>
+
         <div class="field">
           <label for="direccion">Dirección del predio</label>
           <div class="input-wrap">
             <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"/></svg>
             <input id="direccion" name="direccion" type="text" required
-                   placeholder="Ej: Calle 45 # 12-30, Bucaramanga" />
+                   placeholder="Ej: Calle 45 # 12-30, Cúcuta" />
           </div>
         </div>
 
-        <div class="field">
-          <label for="tipoServicio">Tipo de servicio</label>
-          <div class="input-wrap">
-            <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V9l8-6 8 6v12h-6v-6h-4v6H4Z"/></svg>
-            <select id="tipoServicio" name="tipoServicio" required>
-              <option value="" disabled selected>Selecciona una opción</option>
-              <option value="Residencial">Residencial</option>
-              <option value="Comercial">Comercial</option>
-            </select>
+        <div class="row-2">
+          <div class="field">
+            <label for="telefono">Teléfono</label>
+            <div class="input-wrap">
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1L6.6 10.8Z"/></svg>
+              <input id="telefono" name="telefono" type="tel" autocomplete="tel" required
+                     placeholder="Ej: 3001234567" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="montoCupo">Monto del cupo solicitado</label>
+            <div class="input-wrap">
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm.9 5v1.1c1 .2 1.9.7 2.4 1.5l-1.3.9c-.4-.5-1-.8-1.7-.8-.8 0-1.4.4-1.4 1s.5.9 1.7 1.2c1.8.4 2.9 1.1 2.9 2.6 0 1.3-1 2.2-2.6 2.4V18h-1.3v-1.1c-1.1-.2-2-.8-2.5-1.7l1.3-.8c.4.6 1.1 1 1.9 1 .9 0 1.5-.4 1.5-1.1 0-.6-.5-.9-1.8-1.3-1.7-.4-2.8-1-2.8-2.5 0-1.2.9-2.1 2.3-2.4V7h1.3Z"/></svg>
+              <input id="montoCupo" name="montoCupo" type="text" inputmode="numeric" required
+                     placeholder="Ej: 1500000" />
+            </div>
+          </div>
+        </div>
+
+        <label class="checkbox-row" for="tieneCodeudor">
+          <input type="checkbox" id="tieneCodeudor" name="tieneCodeudor" />
+          <span>Este crédito tendrá un codeudor</span>
+        </label>
+
+        <div id="codeudor-fields" class="codeudor-fields" hidden>
+          <div class="field">
+            <label for="nombreCodeudor">Nombre completo o razón social (codeudor)</label>
+            <div class="input-wrap">
+              <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5 0-9 2.5-9 6v1h18v-1c0-3.5-4-6-9-6Z"/></svg>
+              <input id="nombreCodeudor" name="nombreCodeudor" type="text" placeholder="Ej: Carlos Andrés Ruiz" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="tipoDocumentoCodeudor">Tipo de documento</label>
+              <div class="input-wrap">
+                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Zm2 4v2h5V8H6Zm0 4v2h9v-2H6Zm0 4v2h9v-2H6Z"/></svg>
+                <select id="tipoDocumentoCodeudor" name="tipoDocumentoCodeudor">
+                  <option value="" disabled selected>Selecciona</option>
+                  <option value="C.C.">Cédula de ciudadanía (C.C.)</option>
+                  <option value="C.E.">Cédula de extranjería (C.E.)</option>
+                  <option value="NIT">NIT</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="numeroDocumentoCodeudor">Número de documento</label>
+              <div class="input-wrap">
+                <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h18v16H3V4Zm2 2v3h14V6H5Zm0 5v2h6v-2H5Zm0 4v2h9v-2H5Z"/></svg>
+                <input id="numeroDocumentoCodeudor" name="numeroDocumentoCodeudor" type="text" inputmode="numeric"
+                       placeholder="Ej: 1098765432" />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -91,8 +157,8 @@
     <!-- Paso 2/3: progreso de firmas -->
     <section id="step-progress" class="card" hidden>
       <div class="steps">
-        <div class="step" id="pill-1"><span class="dot">1</span> Contrato de Suministro</div>
-        <div class="step" id="pill-2"><span class="dot">2</span> Condiciones de Seguridad</div>
+        <div class="step" id="pill-1"><span class="dot">1</span> Promesa de Mutuo</div>
+        <div class="step" id="pill-2"><span class="dot">2</span> Pagaré en Blanco</div>
         <div class="step" id="pill-3"><span class="dot">✓</span> Confirmación</div>
       </div>
     </section>
@@ -105,10 +171,10 @@
           <path class="dc-mark" fill="none" d="M14 27l8 8 16-17"/>
         </svg>
       </div>
-      <h1>¡Registro completado!</h1>
+      <h1>¡Solicitud completada!</h1>
       <p class="lead" id="done-msg"></p>
       <div class="done-summary" id="done-summary"></div>
-      <button class="btn btn-secondary" onclick="location.reload()">Registrar otro cliente</button>
+      <button class="btn btn-secondary" onclick="location.reload()">Registrar otra solicitud</button>
     </section>
   </main>
 

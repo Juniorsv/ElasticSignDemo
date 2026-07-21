@@ -1,7 +1,7 @@
 {
   "name": "gases-oriente-elastic-signing-demo",
   "version": "1.0.0",
-  "description": "Demo de onboarding de cliente con dos Elastic Signing agreements encadenados (Docusign Click API) para Gases del Oriente",
+  "description": "Demo de solicitud de cupo de crédito rotativo con dos Elastic Signing agreements encadenados (Promesa de Contrato de Mutuo + Pagaré en blanco, Docusign Click API) para Gases del Oriente",
   "main": "server.js",
   "type": "commonjs",
   "engines": {

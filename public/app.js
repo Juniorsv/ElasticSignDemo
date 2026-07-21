@@ -154,13 +154,20 @@ async function finish() {
 
   const d = session.documentData;
   document.getElementById('done-msg').textContent =
-    'Ambos acuerdos fueron aceptados y registrados electrónicamente.';
-  document.getElementById('done-summary').innerHTML =
-    `<div><b>Cliente:</b> ${escapeHtml(d.nombre_cliente)}</div>` +
-    `<div><b>Predio:</b> ${escapeHtml(d.direccion_predio)}</div>` +
-    `<div><b>Servicio:</b> ${escapeHtml(d.tipo_servicio)}</div>` +
+    'La Promesa de Mutuo y el Pagaré en blanco fueron aceptados y registrados electrónicamente.';
+  let summary =
+    `<div><b>Deudor:</b> ${escapeHtml(d.nombre_deudor)}</div>` +
+    `<div><b>Documento:</b> ${escapeHtml(d.tipo_documento_deudor)} ${escapeHtml(d.numero_documento_deudor)}</div>` +
+    `<div><b>Dirección:</b> ${escapeHtml(d.direccion)}</div>` +
+    `<div><b>Teléfono:</b> ${escapeHtml(d.telefono)}</div>` +
+    `<div><b>Cupo aprobado:</b> COP$ ${escapeHtml(d.monto_cupo)}</div>`;
+  if (d.nombre_codeudor) {
+    summary += `<div><b>Codeudor:</b> ${escapeHtml(d.nombre_codeudor)} (${escapeHtml(d.tipo_documento_codeudor)} ${escapeHtml(d.numero_documento_codeudor)})</div>`;
+  }
+  summary +=
     `<div><b>Fecha:</b> ${escapeHtml(d.fecha)}</div>` +
-    `<div><b>Acuerdos:</b> Contrato de Suministro de Gas · Condiciones de Seguridad</div>`;
+    `<div><b>Acuerdos:</b> Promesa de Contrato de Mutuo · Pagaré en Blanco con Carta de Instrucciones</div>`;
+  document.getElementById('done-summary').innerHTML = summary;
 
   document.getElementById('step-progress').hidden = true;
   document.getElementById('step-done').hidden = false;
@@ -211,19 +218,42 @@ function escapeHtml(s) {
   ));
 }
 
+// Muestra/oculta los campos del codeudor según el checkbox.
+document.getElementById('tieneCodeudor').addEventListener('change', (e) => {
+  const box = document.getElementById('codeudor-fields');
+  box.hidden = !e.target.checked;
+  if (!e.target.checked) {
+    document.getElementById('nombreCodeudor').value = '';
+    document.getElementById('tipoDocumentoCodeudor').value = '';
+    document.getElementById('numeroDocumentoCodeudor').value = '';
+  }
+});
+
 document.getElementById('onboarding-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   document.getElementById('form-error').hidden = true;
 
+  const tieneCodeudor = document.getElementById('tieneCodeudor').checked;
+
   const form = {
     nombre: document.getElementById('nombre').value.trim(),
     correo: document.getElementById('correo').value.trim(),
+    tipoDocumento: document.getElementById('tipoDocumento').value,
+    numeroDocumento: document.getElementById('numeroDocumento').value.trim(),
     direccion: document.getElementById('direccion').value.trim(),
-    tipoServicio: document.getElementById('tipoServicio').value,
+    telefono: document.getElementById('telefono').value.trim(),
+    montoCupo: document.getElementById('montoCupo').value.trim(),
+    nombreCodeudor: tieneCodeudor ? document.getElementById('nombreCodeudor').value.trim() : '',
+    tipoDocumentoCodeudor: tieneCodeudor ? document.getElementById('tipoDocumentoCodeudor').value : '',
+    numeroDocumentoCodeudor: tieneCodeudor ? document.getElementById('numeroDocumentoCodeudor').value.trim() : '',
   };
 
-  if (!form.nombre || !form.correo || !form.direccion || !form.tipoServicio) {
-    return showFormError('Completa todos los campos.');
+  const requeridos = ['nombre', 'correo', 'tipoDocumento', 'numeroDocumento', 'direccion', 'telefono', 'montoCupo'];
+  if (requeridos.some((k) => !form[k])) {
+    return showFormError('Completa todos los campos obligatorios.');
+  }
+  if (tieneCodeudor && (!form.nombreCodeudor || !form.tipoDocumentoCodeudor || !form.numeroDocumentoCodeudor)) {
+    return showFormError('Completa los datos del codeudor o desmarca la casilla.');
   }
 
   const btn = document.getElementById('btn-continuar');
