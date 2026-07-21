@@ -186,6 +186,43 @@ async function finish() {
   } catch (_) { /* silencioso */ }
 }
 
+/**
+ * Reinicia el demo para dar de alta una nueva solicitud, SIN recargar la página.
+ * (Antes se usaba location.reload(), que volvía a descargar el SDK y parpadeaba.)
+ */
+function nuevaSolicitud() {
+  // Limpia el estado en memoria.
+  session = null;
+
+  // Reinicia el formulario y oculta los campos del codeudor.
+  document.getElementById('onboarding-form').reset();
+  document.getElementById('codeudor-fields').hidden = true;
+
+  // Limpia el mensaje de error y el confeti que haya quedado.
+  document.getElementById('form-error').hidden = true;
+  document.querySelectorAll('.confetti-piece').forEach((p) => p.remove());
+
+  // Reinicia los indicadores de paso.
+  [1, 2, 3].forEach((n) => setPill(n, ''));
+
+  // Restaura el botón "Continuar" (incluida su flecha, que se pierde al enviar).
+  const btn = document.getElementById('btn-continuar');
+  btn.disabled = false;
+  btn.innerHTML =
+    '<span>Continuar</span>' +
+    '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">' +
+    '<path d="M5 12h12m0 0-5-5m5 5-5 5" fill="none" stroke="currentColor" ' +
+    'stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  // Muestra de nuevo el formulario y oculta las demás pantallas.
+  document.getElementById('step-done').hidden = true;
+  document.getElementById('step-progress').hidden = true;
+  document.getElementById('step-form').hidden = false;
+
+  // Sube la vista al inicio.
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function showFormError(msg) {
   const el = document.getElementById('form-error');
   el.textContent = msg;
